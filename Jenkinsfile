@@ -2,6 +2,8 @@ pipeline{
 
       // 定义groovy脚本中使用的环境变量
       environment{
+        // docker镜像仓库地址  目前我们使用阿里云的镜像服务
+        REGISTRY_URL =  sh(returnStdout: true,script: 'echo $registry_url').trim()
         // 项目名称
         PROJECT_NAME =  sh(returnStdout: true,script: 'echo $project_name').trim()
         // docker镜像标签 示例：master-20210209105814
