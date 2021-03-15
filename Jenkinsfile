@@ -27,7 +27,7 @@ pipeline{
         stage('Package'){
           steps{
               container("maven") {
-                  sh "mvn package -P $ENV -U -B -DskipTests"
+                  sh "mvn package  -U -B -DskipTests"
               }
           }
         }
