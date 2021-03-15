@@ -4,7 +4,7 @@ metadata:
   name: ${PROJECT_NAME}
   namespace: ${NAMESPACE}
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ${PROJECT_NAME}
@@ -14,31 +14,32 @@ spec:
         app: ${PROJECT_NAME}
     spec:
       containers:
-      - name: ${PROJECT_NAME}
-        image: ${IMAGE_URL}
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8888
-        env:
-        - name: REVISION
-          value: ${REVISION}
-        - name: NAMESPACE
-          value: ${NAMESPACE}
+        - name: ${PROJECT_NAME}
+          image: ${REGISTRY_URL}/${PROJECT_NAME}:${IMAGE_TAG}
+          imagePullPolicy: Always
+          ports:
+            - name: port
+              containerPort: 8080
+          env:
+            - name: REVISION
+              value: ${REVISION}
+            - name: NAMESPACE
+              value: ${NAMESPACE}
       imagePullSecrets:
-      - name: $KUBERNETES_SECRET_NAME
+        - name: ${KUBERNETES_SECRET_NAME}
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${PROJECT_NAME}-svc
+  name: ${PROJECT_NAME}
   namespace: ${NAMESPACE}
 spec:
   ports:
-  - name: port
-    port: 8500
-    protocol: TCP
-    targetPort: 8888
+    - name: port
+      port: 8500
+      protocol: TCP
+      targetPort: port
   selector:
     app: ${PROJECT_NAME}
   type: NodePort

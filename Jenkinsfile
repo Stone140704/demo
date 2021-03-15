@@ -23,7 +23,29 @@ pipeline{
 
       // "stages"定义项目构建的多个模块，可以添加多个 “stage”， 可以多个 “stage” 串行或者并行执行
       stages{
+        // 添加第一个stage， 运行源码打包命令
+        stage('Package'){
+          steps{
+              container("maven") {
+                  sh "mvn package -P $ENV -U -B -DskipTests"
+              }
+          }
+        }
 
+        // 添加第二个stage, 运行容器镜像构建和推送命令， 用到了environment中定义的groovy环境变量
+        stage('Image Build And Publish'){
+          steps{
+              container('docker') {
+                   sh 'docker version'
+                   // 刀客编译
+                   sh "docker build -t $REGISTRY_URL/$PROJECT_NAME:$IMAGE_TAG  ."
+                   // 刀客镜像推送
+                   sh "docker push $REGISTRY_URL/$PROJECT_NAME:$IMAGE_TAG"
+                   // 清理镜像
+                   sh 'docker image prune -f'
+              }
+          }
+        }
         // 添加第三个stage， 将容器部署到k8s集群
         stage('Deploy to Kubernetes') {
             steps {
@@ -37,7 +59,7 @@ pipeline{
                     // 设置secret的命名空间，这个secret就是用来拉取私有镜像的用户名密码
                     secretNamespace: "$NAMESPACE",
                     // 设置secret的名字，不设置则会自动生成
-                    secretName: 'my-secret',
+                    secretName: 'docker-secret',
                     // 指定私有镜像仓库，并指定在jenkins中配置的登录仓库的用户名和密码的credential id
                     dockerCredentials: [
                         [credentialsId: 'docker-cfg', url: "$REGISTRY_URL"],
