@@ -40,7 +40,7 @@ pipeline{
                     secretName: 'my-secret',
                     // 指定私有镜像仓库，并指定在jenkins中配置的登录仓库的用户名和密码的credential id
                     dockerCredentials: [
-                        [credentialsId: 'docker-pwd', url: "$REGISTRY_URL"],
+                        [credentialsId: 'docker-cfg', url: "$REGISTRY_URL"],
                     ],
                 )
             }
