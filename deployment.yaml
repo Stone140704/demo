@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: ${PROJECT_NAME}
   namespace: ${NAMESPACE}
+  labels:
+    app: ${PROJECT_NAME}
 spec:
   replicas: 1
   selector:
@@ -15,18 +17,23 @@ spec:
     spec:
       containers:
         - name: ${PROJECT_NAME}
-          image: ${REGISTRY_URL}/${PROJECT_NAME}:${IMAGE_TAG}
+          image: ${ORIGIN_REPO}/${PROJECT_NAME}:${IMAGE_TAG}
           imagePullPolicy: Always
-          ports:
-            - name: port
-              containerPort: 8080
           env:
-            - name: REVISION
-              value: ${REVISION}
+            - name: TZ
+              value: Asia/Shanghai
+            - name: BUILD_TAG
+              value: ${BUILD_TAG}
             - name: NAMESPACE
               value: ${NAMESPACE}
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 200m
+              memory: 500Mi
       imagePullSecrets:
-        - name: ${KUBERNETES_SECRET_NAME}
+        - name: acr-docker-password
 
 ---
 apiVersion: v1
@@ -34,12 +41,14 @@ kind: Service
 metadata:
   name: ${PROJECT_NAME}
   namespace: ${NAMESPACE}
+  labels:
+    app: ${PROJECT_NAME}
 spec:
   ports:
     - name: port
-      port: 8500
+      port: 80
       protocol: TCP
-      targetPort: port
+      targetPort: 8080
   selector:
     app: ${PROJECT_NAME}
-  type: NodePort
+  type: ClusterIP
