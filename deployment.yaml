@@ -40,7 +40,7 @@ spec:
         - name: acr-docker-password
       volumes:
         - configMap:
-            name: ${NAMESPACE}
+            name: ${PROJECT_NAME}
           name: config
 
 ---
