@@ -28,12 +28,20 @@ spec:
               value: ${NAMESPACE}
           ports:
             - containerPort: 8080
+              name: httpPort
           resources:
             requests:
               cpu: 200m
               memory: 500Mi
+          volumeMounts:
+            - mountPath: /nfplus/config
+              name: config
       imagePullSecrets:
         - name: acr-docker-password
+      volumes:
+        - configMap:
+            name: ${NAMESPACE}
+          name: config
 
 ---
 apiVersion: v1
@@ -48,7 +56,7 @@ spec:
     - name: port
       port: 80
       protocol: TCP
-      targetPort: 8080
+      targetPort: httpPort
   selector:
     app: ${PROJECT_NAME}
   type: ClusterIP

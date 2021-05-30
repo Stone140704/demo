@@ -28,6 +28,14 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+        <!-- 时间工具包-->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.10</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -49,6 +57,31 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.southcn.nfapp</groupId>
+                <artifactId>devops-maven-plugin</artifactId>
+                <version>1.1-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>create-docker</goal>
+                            <goal>create-jenkins</goal>
+                            <goal>create-k8s</goal>
+                            <goal>create-jenkinsJob</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
