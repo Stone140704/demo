@@ -57,31 +57,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.southcn.nfapp</groupId>
-                <artifactId>devops-maven-plugin</artifactId>
-                <version>1.1-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>package</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>create-docker</goal>
-                            <goal>create-jenkins</goal>
-                            <goal>create-k8s</goal>
-                            <goal>create-jenkinsJob</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 </project>
