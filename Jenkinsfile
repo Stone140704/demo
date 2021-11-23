@@ -37,14 +37,17 @@ pipeline{
         stage('Image Build And Publish'){
           steps{
               container('docker') {
+                withCredentials([usernamePassword(credentialsId: 'harbor', usernameVariable: 'username', passwordVariable: 'password')]){
                    sh 'docker version'
                    // 刀客编译
                    sh "docker build -t $ORIGIN_REPO/$PROJECT_NAME:$IMAGE_TAG  ."
+                   sh "docker login -u $username -p $password $ORIGIN_REPO"
                    // 刀客镜像推送
                    sh "docker push $ORIGIN_REPO/$PROJECT_NAME:$IMAGE_TAG"
                    // 清理镜像
                    sh 'docker image prune -f'
-              }
+                }
+             }
           }
         }
 
